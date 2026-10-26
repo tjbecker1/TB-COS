@@ -14,3 +14,8 @@ double Car::GetTireCondtion() const
 {
 	return mTireCondition;
 }
+
+int Car::GetNumber() const
+{
+	return mNumber;
+}

@@ -4,13 +4,15 @@
 class Car
 {
 private:
-	std::string mName = "Stock Car";
+	std::string mName = "Race Car";
 	double mFuel = 100.0;
 	double mTireCondition = 100.0;
+	int mNumber = 0;
 
 public:
 	std::string GetName() const;
 	double GetFuel() const;
 	double GetTireCondtion() const;
+	int GetNumber() const;
 };
 
