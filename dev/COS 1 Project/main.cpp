@@ -1,9 +1,9 @@
-
-
 #include <iostream>
+#include "Car.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    Car testCar;
+    std::cout << "Car name:" << testCar.GetName()<<'\n';
 }
 
