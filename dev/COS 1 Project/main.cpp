@@ -1,9 +1,14 @@
 #include <iostream>
 #include "Car.h"
+#include <iomanip>
 
 int main()
 {
     Car testCar;
+    std::cout << std::fixed << std::setprecision(0);
+
     std::cout << "Car name:" << testCar.GetName()<<'\n';
+    std::cout << "Fuel:" << testCar.GetFuel() << "%\n";
+    std::cout << "Tire Wear:" << testCar.GetTireCondtion() << "%\n";
 }
 

@@ -10,5 +10,7 @@ private:
 
 public:
 	std::string GetName() const;
+	double GetFuel() const;
+	double GetTireCondtion() const;
 };
 
