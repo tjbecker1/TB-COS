@@ -9,3 +9,8 @@ std::string Driver::GetName() const
 {
 	return mName;
 }
+
+const Car& Driver::GetCar() const
+{
+	return mCar;
+}

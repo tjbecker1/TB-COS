@@ -10,7 +10,7 @@ double Car::GetFuel() const
 	return mFuel;
 }
 
-double Car::GetTireCondtion() const
+double Car::GetTireCondition() const
 {
 	return mTireCondition;
 }

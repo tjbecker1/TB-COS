@@ -12,7 +12,7 @@ private:
 public:
 	std::string GetName() const;
 	double GetFuel() const;
-	double GetTireCondtion() const;
+	double GetTireCondition() const;
 	int GetNumber() const;
 	Car() = default;
 	Car(const std::string& name, int number);

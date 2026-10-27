@@ -11,5 +11,6 @@ private:
 public:
 	Driver(const std::string& name, const Car& car);
 	std::string GetName() const;
+	const Car& GetCar() const;
 };
 
