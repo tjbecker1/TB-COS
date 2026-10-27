@@ -16,5 +16,15 @@ int main()
     std::cout << "Fuel: " << testDriver.GetCar().GetFuel() << "%\n";
     std::cout << "Tire condition: "
         << testDriver.GetCar().GetTireCondition() << "%\n";
+
+    testDriver.AddLapTime(32.5);
+    testDriver.AddLapTime(31.8);
+
+    // Show race times with two decimal places.
+    std::cout << std::fixed << std::setprecision(2);
+
+    std::cout << "Total race time: "
+        << testDriver.GetTotalRaceTime()
+        << " seconds\n";
 }
 
