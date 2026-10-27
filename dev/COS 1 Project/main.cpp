@@ -26,5 +26,17 @@ int main()
     std::cout << "Total race time: "
         << testDriver.GetTotalRaceTime()
         << " seconds\n";
+
+    testDriver.ResetRaceTime();
+
+    std::cout << "After reset: "
+        << testDriver.GetTotalRaceTime()
+        << " seconds\n";
+
+    testDriver.AddLapTime(30.5);
+
+    std::cout << "New race total: "
+        << testDriver.GetTotalRaceTime()
+        << " seconds\n";
 }
 

@@ -14,6 +14,7 @@ public:
 	std::string GetName() const;
 	const Car& GetCar() const;
 	double GetTotalRaceTime() const;
-		void AddLapTime(double lapTime);
+	void AddLapTime(double lapTime);
+	void ResetRaceTime();
 };
 

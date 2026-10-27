@@ -27,3 +27,8 @@ void Driver::AddLapTime(double lapTime)
 		mTotalRaceTime += lapTime;
 	}
 }
+
+void Driver::ResetRaceTime()
+{
+	mTotalRaceTime = 0.0;
+}
