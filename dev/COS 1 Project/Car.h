@@ -14,5 +14,7 @@ public:
 	double GetFuel() const;
 	double GetTireCondtion() const;
 	int GetNumber() const;
+	Car() = default;
+	Car(const std::string& name, int number);
 };
 

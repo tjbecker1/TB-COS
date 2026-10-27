@@ -19,3 +19,8 @@ int Car::GetNumber() const
 {
 	return mNumber;
 }
+
+Car::Car(const std::string& name, int number): mName(name), mNumber(number)
+{
+
+}
