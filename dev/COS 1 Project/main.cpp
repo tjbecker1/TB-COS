@@ -6,6 +6,7 @@
 
 int main()
 {
+    //Following comments are test code to ensure things work
     Car testCar("Stock Car", 414);
     Driver testDriver("Tyler Becker", testCar);
 
@@ -40,6 +41,7 @@ int main()
         << testDriver.GetTotalRaceTime()
         << " seconds\n";
 
+    // following code is the actual game code
     Game game;
     game.Run();
 }
