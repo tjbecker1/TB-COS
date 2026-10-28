@@ -35,6 +35,7 @@ void Game::Run()
 		case '2':
 			std::cout << "Console Stock Car Racing is a text based racing game.\n";
 			std::cout << "Compete against AI drivers for the best Finish possible.\n";
+			break;
 
 		case '3':
 			std::cout << "Thanks for playing!\n";
