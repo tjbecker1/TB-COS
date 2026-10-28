@@ -2,6 +2,7 @@
 #include "Car.h"
 #include <iomanip>
 #include "Driver.h"
+#include "Game.h"
 
 int main()
 {
@@ -38,5 +39,8 @@ int main()
     std::cout << "New race total: "
         << testDriver.GetTotalRaceTime()
         << " seconds\n";
+
+    Game game;
+    game.Run();
 }
 
