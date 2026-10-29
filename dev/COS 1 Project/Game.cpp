@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
+#include <sstream>
 
 void Game::DisplayMenu() const
 {
@@ -32,6 +33,8 @@ void Game::Run()
 		case '1':
 		{
 			std::string driverName;
+			std::string numberInput;
+			int carNumber = 0;
 
 			do
 			{
@@ -48,9 +51,34 @@ void Game::Run()
 				}
 			} while (driverName.find_first_not_of("\t") == std::string::npos);
 
-			std::cout << "Welcome, " << driverName << "!\n";
-		}
+			while (true)
+			{
+				std::cout << "Please select your car number (1-99): ";
+
+				if (!std::getline(std::cin, numberInput))
+				{
+					return;
+				}
+
+				std::istringstream input(numberInput);
+				char extraCharacter;
+
+				if ((input >> carNumber) &&
+					!(input >> extraCharacter) &&
+					carNumber >= 1 &&
+					carNumber <= 99)
+				{
+					break;
+				}
+
+				std::cout << "Invalid Number. Enter a Number from 1 to 99.\n";
+			}
+
+			std::cout << "\nWelcome, " << driverName
+				<< "! You will race as #" << carNumber << ".\n";
+
 			break;
+		}
 
 		case '2':
 			std::cout << "Console Stock Car Racing is a text based racing game.\n";
