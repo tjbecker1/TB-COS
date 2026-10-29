@@ -30,6 +30,26 @@ void Game::Run()
 		switch (choice.size() == 1 ? choice[0] : '\0')
 		{
 		case '1':
+		{
+			std::string driverName;
+
+			do
+			{
+				std::cout << "Enter your Driver's Name:";
+
+				if (!std::getline(std::cin, driverName))
+				{
+					return;
+				}
+
+				if (driverName.find_first_not_of("\t") == std::string::npos)
+				{
+					std::cout << "Driver Name cannot be blank.\n";
+				}
+			} while (driverName.find_first_not_of("\t") == std::string::npos);
+
+			std::cout << "Welcome, " << driverName << "!\n";
+		}
 			break;
 
 		case '2':
