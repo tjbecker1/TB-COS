@@ -35,6 +35,12 @@ void Game::Run()
 		case '2':
 			std::cout << "Console Stock Car Racing is a text based racing game.\n";
 			std::cout << "Compete against AI drivers for the best Finish possible.\n";
+			std::cout << "Press Enter to return to the Main Menu.\n";
+			
+			if (!std::getline(std::cin, choice))
+			{
+				return;
+			}
 			break;
 
 		case '3':
