@@ -139,7 +139,17 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="COS 1 Project.cpp" />
+    <ClCompile Include="Car.cpp" />
+    <ClCompile Include="Driver.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Race.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Car.h" />
+    <ClInclude Include="Driver.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Race.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
