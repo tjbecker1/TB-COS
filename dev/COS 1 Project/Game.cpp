@@ -4,6 +4,7 @@
 #include <sstream>
 #include "Car.h"
 #include "Driver.h"
+#include "Race.h"
 
 
 void Game::DisplayMenu() const
@@ -82,6 +83,9 @@ void Game::Run()
 
 			std::cout << "\nWelcome, " << driverName
 				<< "! You will race as #" << carNumber << ".\n";
+
+			Race race;
+			race.Run(playerDriver);
 
 			break;
 		}
