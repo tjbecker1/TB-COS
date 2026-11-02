@@ -2,6 +2,9 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "Car.h"
+#include "Driver.h"
+
 
 void Game::DisplayMenu() const
 {
@@ -73,6 +76,9 @@ void Game::Run()
 
 				std::cout << "Invalid Number. Enter a Number from 1 to 99.\n";
 			}
+
+			Car playerCar("Stock Car", carNumber);
+			Driver playerDriver(driverName, playerCar);
 
 			std::cout << "\nWelcome, " << driverName
 				<< "! You will race as #" << carNumber << ".\n";
