@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <random>
 
 
 void Race::Run(Driver& player)
@@ -36,7 +37,9 @@ void Race::Run(Driver& player)
 	}
 
 	const int totalLaps = 5;
-	const double lapTime = 32.5;
+	std::random_device seed;
+	std::mt19937 generator(seed());
+	std::uniform_int_distribution<int> lapHundreths(3000, 3500);
 
 	std::cout << "Race Starting!\n";
 	std::cout << std::fixed << std::setprecision(2);
@@ -47,6 +50,7 @@ void Race::Run(Driver& player)
 
 		for (Driver& driver : mDrivers)
 		{
+			const double lapTime = lapHundreths(generator) / 100.0;
 			driver.AddLapTime(lapTime);
 
 			std::cout << driver.GetName()
