@@ -3,7 +3,13 @@
 #include <iomanip>
 #include <string>
 #include <random>
+#include <algorithm>
 
+
+bool CompareRaceTimes(const Driver& first, const Driver& second)
+{
+	return first.GetTotalRaceTime() < second.GetTotalRaceTime();
+}
 
 void Race::Run(Driver& player)
 {
@@ -58,13 +64,20 @@ void Race::Run(Driver& player)
 		}
 	}
 
-	std::cout << "\nRace finished!\n";
+	std::stable_sort(mDrivers.begin(), mDrivers.end(), CompareRaceTimes);
+
+	std::cout << "\n========== FINAL RESULTS ==========\n";
+
+	int position = 1;
 
 	for (const Driver& driver : mDrivers)
 	{
-		std::cout << driver.GetName()
+		std::cout << position << ". "
+			<< driver.GetName()
 			<< " - #" << driver.GetCar().GetNumber()
 			<< " - Total time: " << driver.GetTotalRaceTime()
 			<< " seconds\n";
+
+		++position;
 	}
 }
