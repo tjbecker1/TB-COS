@@ -24,3 +24,16 @@ Car::Car(const std::string& name, int number): mName(name), mNumber(number)
 {
 
 }
+
+void Car::ConsumeFuel(double amount)
+{
+	if (amount > 0.0)
+	{
+		mFuel -= amount;
+
+		if (mFuel < 0.0)
+		{
+			mFuel = 0.0;
+		}
+	}
+}

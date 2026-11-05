@@ -58,9 +58,14 @@ void Race::Run(Driver& player)
 		{
 			const double lapTime = lapHundreths(generator) / 100.0;
 			driver.AddLapTime(lapTime);
+			driver.GetCar().ConsumeFuel(8.0);
 
 			std::cout << driver.GetName()
-				<< " - Time: " << lapTime << " seconds\n";
+				<< " - Time: " << std::fixed << std::setprecision(2)
+				<< lapTime << " seconds"
+				<< " - Fuel: " << std::setprecision(0)
+				<< driver.GetCar().GetFuel() << "%\n"
+				<< std::setprecision(2);
 		}
 	}
 
