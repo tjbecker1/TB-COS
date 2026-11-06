@@ -32,3 +32,8 @@ void Driver::ResetRaceTime()
 {
 	mTotalRaceTime = 0.0;
 }
+
+Car& Driver::GetCar()
+{
+	return mCar;
+}

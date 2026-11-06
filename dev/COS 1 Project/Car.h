@@ -16,5 +16,7 @@ public:
 	int GetNumber() const;
 	Car() = default;
 	Car(const std::string& name, int number);
+	void ConsumeFuel(double amount);
+	void WearTires(double amount);
 };
 

@@ -12,7 +12,7 @@ private:
 public:
 	Driver(const std::string& name, const Car& car);
 	std::string GetName() const;
-	const Car& GetCar() const;
+	const Car& GetCar() const; Car& GetCar();
 	double GetTotalRaceTime() const;
 	void AddLapTime(double lapTime);
 	void ResetRaceTime();
