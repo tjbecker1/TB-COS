@@ -37,3 +37,16 @@ void Car::ConsumeFuel(double amount)
 		}
 	}
 }
+
+void Car::WearTires(double amount)
+{
+	if (amount > 0.0)
+	{
+		mTireCondition -= amount;
+
+		if (mTireCondition < 0.0)
+		{
+			mTireCondition = 0.0;
+		}
+	}
+}
