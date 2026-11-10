@@ -1,138 +1,264 @@
 #include "Race.h"
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <random>
-#include <algorithm>
+#include "Car.h"
+#include "Driver.h"
 #include "Input.h"
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <string>
+#include <map>
 
 
 
 bool CompareRaceTimes(const Driver& first, const Driver& second)
 {
-	return first.GetTotalRaceTime() < second.GetTotalRaceTime();
+    return first.GetTotalRaceTime() < second.GetTotalRaceTime();
 }
 
 Driver* Race::FindDriverByNumber(int carNumber)
 {
-	for (Driver& driver : mDrivers)
-	{
-		if (driver.GetCar().GetNumber() == carNumber)
-		{
-			return &driver;
-		}
-	}
-	return nullptr;
+    for (Driver& driver : mDrivers)
+    {
+        if (driver.GetCar().GetNumber() == carNumber)
+        {
+            return &driver;
+        }
+    }
+
+    return nullptr;
+}
+
+void Race::DisplayResults()
+{
+    std::stable_sort(
+        mDrivers.begin(),
+        mDrivers.end(),
+        CompareRaceTimes);
+
+    std::cout << "\n========== FINAL RESULTS ==========\n";
+    std::cout << std::fixed << std::setprecision(2);
+
+    int position = 1;
+
+    for (const Driver& driver : mDrivers)
+    {
+        std::cout << position << ". "
+            << driver.GetName()
+            << " - #" << driver.GetCar().GetNumber()
+            << " - Total time: "
+            << driver.GetTotalRaceTime()
+            << " seconds\n";
+
+        ++position;
+    }
 }
 
 void Race::Run(Driver& player)
 {
-	player.ResetRaceTime();
+    constexpr int totalLaps = 5;
+    constexpr int opponentCount = 3;
+    constexpr int minimumLapHundredths = 3000;
+    constexpr int maximumLapHundredths = 3500;
+    constexpr double hundredthsPerSecond = 100.0;
+    constexpr double fuelUsagePerLap = 8.0;
+    constexpr double tireWearPerLap = 6.0;
+    constexpr double pitStopTime = 15.0;
+    constexpr int continueRacingChoice = 1;
+    constexpr int pitStopChoice = 2;
+    constexpr double maximumTireCondition = 100.0;
+    constexpr double tirePenaltyPerPercent = 0.10;
 
-	mDrivers.clear();
-	mDrivers.push_back(player);
+    player.ResetRaceTime();
 
-	int aiNumber = 1;
+    mDrivers.clear();
+    mDrivers.push_back(player);
 
-	for (int oppenent = 1; oppenent <= 3; ++oppenent)
-	{
-		//Keep the player's number unique
-		if (aiNumber == player.GetCar().GetNumber())
-		{
-			++aiNumber;
-		}
+    const int playerCarNumber = player.GetCar().GetNumber();
+    std::random_device seed;
+    std::mt19937 generator(seed());
+    std::vector<std::string> aiNames =
+    {
+    "Cole Mercer",
+    "Jake Whitmore",
+    "Ethan Prescott",
+    "Mason Brooks",
+    "Dylan Cross",
+    "Caleb Lawson",
+    "Ryan Steele",
+    "Logan West",
+    "Blake Turner",
+    "Hunter Callahan",
+    "Austin Reed",
+    "Cody Barrett",
+    "Jesse Maddox",
+    "Travis Knox",
+    "Wyatt Stone",
+    "Garrett Shaw",
+    "Connor Mitchell",
+    "Brent Walker",
+    "Tyler Hayes",
+    "Chase Dalton",
+    "Nate Holloway",
+    "Luke Ramsey",
+    "Dustin Cole",
+    "Owen Briggs",
+    "Zack Winslow"
+    };
 
-		Car aiCar("Stock Car", aiNumber);
-		Driver aiDriver("AI Driver " + std::to_string(oppenent), aiCar);
+    std::shuffle(aiNames.begin(), aiNames.end(), generator);
 
-		mDrivers.push_back(aiDriver);
-		++aiNumber;
-	}
+    constexpr int earliestPitLap = 2;
+    constexpr int latestPitLap = 4;
 
-	std::cout << "Starting Lineup:\n";
+    std::uniform_int_distribution<int> pitLapDistribution(
+        earliestPitLap, latestPitLap);
 
-	for (const Driver& driver : mDrivers)
-	{
-		std::cout << driver.GetName() << "- #" << driver.GetCar().GetNumber() << '\n';
-	}
+    std::map<int, int> aiPitLaps;
+    constexpr int minimumCarNumber = 1;
+    constexpr int maximumCarNumber = 99;
 
-	const int totalLaps = 5;
-	constexpr double pitStopTime = 15.0;
-	std::random_device seed;
-	std::mt19937 generator(seed());
-	std::uniform_int_distribution<int> lapHundreths(3000, 3500);
+    std::uniform_int_distribution<int> carNumbers(
+        minimumCarNumber,
+        maximumCarNumber);
 
-	std::cout << "Race Starting!\n";
-	std::cout << std::fixed << std::setprecision(2);
+    for (int opponent = 0; opponent < opponentCount; ++opponent)
+    {
+        int aiNumber = 0;
 
-	for (int lap = 1; lap <= totalLaps; ++lap)
-	{
-		std::cout << "\nLap " << lap << "/" << totalLaps << '\n';
+        do
+        {
+            aiNumber = carNumbers(generator);
+        } while (FindDriverByNumber(aiNumber) != nullptr);
 
-		for (Driver& driver : mDrivers)
-		{
-			const double lapTime = lapHundreths(generator) / 100.0;
-			driver.AddLapTime(lapTime);
-			driver.GetCar().ConsumeFuel(8.0);
-			driver.GetCar().WearTires(6.0);
+        Car aiCar("Stock Car", aiNumber);
+        Driver aiDriver(aiNames[opponent], aiCar);
 
-			std::cout << driver.GetName()
-				<< " - Time: " << std::fixed << std::setprecision(2)
-				<< lapTime << " seconds"
-				<< " - Fuel: " << std::setprecision(0)
-				<< driver.GetCar().GetFuel() << "%"
-				<< " - Tires: " << driver.GetCar().GetTireCondition() << "%\n"
-				<< std::setprecision(2);
-		}
+        mDrivers.push_back(aiDriver);
 
-		// All drivers have finished this lap.
-		// Offer a pit stop when another lap remains.
-		if (lap < totalLaps)
-		{
-			Driver* racingPlayer =
-				FindDriverByNumber(player.GetCar().GetNumber());
+        aiPitLaps[aiNumber] = pitLapDistribution(generator);
+    }
 
-			if (racingPlayer == nullptr)
-			{
-				std::cout << "Unable to find the player in this race.\n";
-				return;
-			}
+    std::cout << "\n========== STARTING LINEUP ==========\n";
 
-			std::cout << "\n1. Continue racing\n";
-			std::cout << "2. Pit stop - refuel and replace tires (+"
-				<< pitStopTime << " seconds)\n";
+    for (const Driver& driver : mDrivers)
+    {
+        std::cout << driver.GetName()
+            << " - #" << driver.GetCar().GetNumber()
+            << '\n';
+    }
 
-			int pitChoice = Input::GetNumber("Choose an option: ", 1, 2);
+    std::uniform_int_distribution<int> lapHundredths(minimumLapHundredths,maximumLapHundredths);
 
-			if (pitChoice == -1)
-			{
-				return;
-			}
+    std::cout << "\nRace Starting!\n";
+    std::cout << std::fixed << std::setprecision(2);
 
-			if (pitChoice == 2)
-			{
-				racingPlayer->GetCar().ServiceCar();
-				racingPlayer->AddLapTime(pitStopTime);
+    for (int lap = 1; lap <= totalLaps; ++lap)
+    {
+        std::cout << "\nLap " << lap << "/" << totalLaps << '\n';
 
-				std::cout << "Pit stop complete! Fuel: 100% - Tires: 100%\n";
-			}
-		}
-	}
+        double playerLapTime = 0.0;
 
-	std::stable_sort(mDrivers.begin(), mDrivers.end(), CompareRaceTimes);
+        // Complete this lap for every driver.
+        for (Driver& driver : mDrivers)
+        {
+            const double baseLapTime = lapHundredths(generator) / hundredthsPerSecond;
 
-	std::cout << "\n========== FINAL RESULTS ==========\n";
+            const double tireWear = maximumTireCondition - driver.GetCar().GetTireCondition();
 
-	int position = 1;
+            const double tirePenalty = tireWear * tirePenaltyPerPercent;
+            const double lapTime = baseLapTime + tirePenalty;
 
-	for (const Driver& driver : mDrivers)
-	{
-		std::cout << position << ". "
-			<< driver.GetName()
-			<< " - #" << driver.GetCar().GetNumber()
-			<< " - Total time: " << driver.GetTotalRaceTime()
-			<< " seconds\n";
+            driver.AddLapTime(lapTime);
+            driver.GetCar().ConsumeFuel(fuelUsagePerLap);
+            driver.GetCar().WearTires(tireWearPerLap);
 
-		++position;
-	}
+            if (driver.GetCar().GetNumber() == playerCarNumber)
+            {
+                playerLapTime = lapTime;
+            }
+
+            std::cout << driver.GetName()
+                << " - Time: " << std::setprecision(2)
+                << lapTime << " seconds"
+                << " - Fuel: " << std::setprecision(0)
+                << driver.GetCar().GetFuel() << "%"
+                << " - Tires: "
+                << driver.GetCar().GetTireCondition() << "%\n"
+                << std::setprecision(2);
+
+            const int driverCarNumber = driver.GetCar().GetNumber();
+
+            if (driverCarNumber != playerCarNumber &&
+                lap == aiPitLaps.at(driverCarNumber))
+            {
+                driver.GetCar().ServiceCar();
+                driver.AddLapTime(pitStopTime);
+
+                std::cout << "  " << driver.GetName()
+                    << " makes a pit stop! +"
+                    << std::fixed << std::setprecision(2)
+                    << pitStopTime << " seconds"
+                    << " - Fuel: 100% - Tires: 100%\n";
+            }
+        }
+
+        if (lap < totalLaps)
+        {
+            Driver* racingPlayer = FindDriverByNumber(playerCarNumber);
+
+            if (racingPlayer == nullptr)
+            {
+                std::cout << "Unable to find the player in this race.\n";
+                return;
+            }
+
+            std::cout << "\n" << continueRacingChoice
+                << ". Continue racing\n";
+            std::cout << pitStopChoice
+                << ". Pit stop - refuel and replace tires (+"
+                << pitStopTime << " seconds)\n";
+
+            int pitChoice = Input::GetNumber(
+                "Choose an option: ",
+                continueRacingChoice,
+                pitStopChoice);
+
+            if (pitChoice == -1)
+            {
+                return;
+            }
+
+            if (pitChoice == pitStopChoice)
+            {
+                racingPlayer->GetCar().ServiceCar();
+                racingPlayer->AddLapTime(pitStopTime);
+
+                std::cout << std::fixed << std::setprecision(2);
+                std::cout << "\nLap " << lap << " summary\n";
+                std::cout << "Driving time: "
+                    << playerLapTime << " seconds\n";
+                std::cout << "Pit stop: +"
+                    << pitStopTime << " seconds\n";
+                std::cout << "Lap time including pit stop: "
+                    << playerLapTime + pitStopTime
+                    << " seconds\n";
+                std::cout << "Total race time so far: "
+                    << racingPlayer->GetTotalRaceTime()
+                    << " seconds\n";
+                std::cout << "Fuel: 100% - Tires: 100%\n";
+            }
+        }
+    }
+
+    DisplayResults();
+
+    std::cout << "Press Enter to return to the Main Menu...\n";
+
+    std::string pauseInput;
+
+    if (!std::getline(std::cin, pauseInput))
+    {
+        return;
+    }
 }
