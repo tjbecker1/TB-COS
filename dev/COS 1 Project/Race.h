@@ -7,6 +7,7 @@ class Race
 {
 private:
 	std::vector<Driver>mDrivers;
+	Driver* FindDriverByNumber(int carNumber);
 
 public:
 	void Run(Driver& player);

@@ -50,3 +50,9 @@ void Car::WearTires(double amount)
 		}
 	}
 }
+
+void Car::ServiceCar()
+{
+	mFuel = 100.0;
+	mTireCondition = 100.0;
+}

@@ -18,5 +18,6 @@ public:
 	Car(const std::string& name, int number);
 	void ConsumeFuel(double amount);
 	void WearTires(double amount);
+	void ServiceCar();
 };
 

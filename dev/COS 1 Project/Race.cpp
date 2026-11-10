@@ -4,11 +4,25 @@
 #include <string>
 #include <random>
 #include <algorithm>
+#include "Input.h"
+
 
 
 bool CompareRaceTimes(const Driver& first, const Driver& second)
 {
 	return first.GetTotalRaceTime() < second.GetTotalRaceTime();
+}
+
+Driver* Race::FindDriverByNumber(int carNumber)
+{
+	for (Driver& driver : mDrivers)
+	{
+		if (driver.GetCar().GetNumber() == carNumber)
+		{
+			return &driver;
+		}
+	}
+	return nullptr;
 }
 
 void Race::Run(Driver& player)
@@ -43,6 +57,7 @@ void Race::Run(Driver& player)
 	}
 
 	const int totalLaps = 5;
+	constexpr double pitStopTime = 15.0;
 	std::random_device seed;
 	std::mt19937 generator(seed());
 	std::uniform_int_distribution<int> lapHundreths(3000, 3500);
@@ -68,6 +83,39 @@ void Race::Run(Driver& player)
 				<< driver.GetCar().GetFuel() << "%"
 				<< " - Tires: " << driver.GetCar().GetTireCondition() << "%\n"
 				<< std::setprecision(2);
+		}
+
+		// All drivers have finished this lap.
+		// Offer a pit stop when another lap remains.
+		if (lap < totalLaps)
+		{
+			Driver* racingPlayer =
+				FindDriverByNumber(player.GetCar().GetNumber());
+
+			if (racingPlayer == nullptr)
+			{
+				std::cout << "Unable to find the player in this race.\n";
+				return;
+			}
+
+			std::cout << "\n1. Continue racing\n";
+			std::cout << "2. Pit stop - refuel and replace tires (+"
+				<< pitStopTime << " seconds)\n";
+
+			int pitChoice = Input::GetNumber("Choose an option: ", 1, 2);
+
+			if (pitChoice == -1)
+			{
+				return;
+			}
+
+			if (pitChoice == 2)
+			{
+				racingPlayer->GetCar().ServiceCar();
+				racingPlayer->AddLapTime(pitStopTime);
+
+				std::cout << "Pit stop complete! Fuel: 100% - Tires: 100%\n";
+			}
 		}
 	}
 
