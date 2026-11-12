@@ -13,6 +13,6 @@ private:
 	void DisplayStandings() const;
 
 public:
-	void Run(Driver& player);
+	void Run(Driver& player, int totalLaps);
 };
 

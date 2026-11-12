@@ -87,9 +87,8 @@ void Race::DisplayStandings() const
     }
 }
 
-void Race::Run(Driver& player)
+void Race::Run(Driver& player, int totalLaps)
 {
-    constexpr int totalLaps = 5;
     constexpr int opponentCount = 3;
     constexpr int minimumLapHundredths = 3000;
     constexpr int maximumLapHundredths = 3500;
@@ -142,7 +141,7 @@ void Race::Run(Driver& player)
     std::shuffle(aiNames.begin(), aiNames.end(), generator);
 
     constexpr int earliestPitLap = 2;
-    constexpr int latestPitLap = 4;
+    const int latestPitLap = totalLaps - 1;
 
     std::uniform_int_distribution<int> pitLapDistribution(
         earliestPitLap, latestPitLap);

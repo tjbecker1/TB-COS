@@ -82,8 +82,22 @@ void Game::Run()
             std::cout << "\nWelcome, " << driverName
                 << "! You will race as #" << carNumber << ".\n";
 
+            constexpr int minimumLaps = 5;
+            constexpr int maximumLaps = 10;
+
+            const int totalLaps = Input::GetNumber(
+                "Choose the race length (5-10 laps): ",
+                minimumLaps,
+                maximumLaps);
+
+            if (totalLaps == -1)
+            {
+                return;
+            }
+
+
             Race race;
-            race.Run(playerDriver);
+            race.Run(playerDriver, totalLaps);
 
             break;
         }
