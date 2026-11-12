@@ -54,6 +54,12 @@ void Race::DisplayResults()
     }
 }
 
+void Race::PerformPitStop(Driver& driver, double pitStopTime)
+{
+    driver.GetCar().ServiceCar();
+    driver.AddLapTime(pitStopTime);
+}
+
 void Race::Run(Driver& player)
 {
     constexpr int totalLaps = 5;
@@ -137,6 +143,7 @@ void Race::Run(Driver& player)
         mDrivers.push_back(aiDriver);
 
         aiPitLaps[aiNumber] = pitLapDistribution(generator);
+
     }
 
     std::cout << "\n========== STARTING LINEUP ==========\n";
@@ -159,7 +166,6 @@ void Race::Run(Driver& player)
 
         double playerLapTime = 0.0;
 
-        // Complete this lap for every driver.
         for (Driver& driver : mDrivers)
         {
             const double baseLapTime = lapHundredths(generator) / hundredthsPerSecond;
@@ -192,8 +198,7 @@ void Race::Run(Driver& player)
             if (driverCarNumber != playerCarNumber &&
                 lap == aiPitLaps.at(driverCarNumber))
             {
-                driver.GetCar().ServiceCar();
-                driver.AddLapTime(pitStopTime);
+                PerformPitStop(driver, pitStopTime);
 
                 std::cout << "  " << driver.GetName()
                     << " makes a pit stop! +"
@@ -231,8 +236,7 @@ void Race::Run(Driver& player)
 
             if (pitChoice == pitStopChoice)
             {
-                racingPlayer->GetCar().ServiceCar();
-                racingPlayer->AddLapTime(pitStopTime);
+                PerformPitStop(*racingPlayer, pitStopTime);
 
                 std::cout << std::fixed << std::setprecision(2);
                 std::cout << "\nLap " << lap << " summary\n";
