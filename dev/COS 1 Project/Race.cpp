@@ -60,6 +60,33 @@ void Race::PerformPitStop(Driver& driver, double pitStopTime)
     driver.AddLapTime(pitStopTime);
 }
 
+void Race::DisplayStandings() const
+{
+    // Sort a copy to keep the original driver order unchanged.
+    std::vector<Driver> standings = mDrivers;
+
+    std::stable_sort(
+        standings.begin(),
+        standings.end(),
+        CompareRaceTimes);
+
+    std::cout << "\n========== CURRENT STANDINGS ==========\n";
+    std::cout << std::fixed << std::setprecision(2);
+
+    int position = 1;
+
+    for (const Driver& driver : standings)
+    {
+        std::cout << position << ". "
+            << driver.GetName()
+            << " - #" << driver.GetCar().GetNumber()
+            << " - Total: " << driver.GetTotalRaceTime()
+            << " seconds\n";
+
+        ++position;
+    }
+}
+
 void Race::Run(Driver& player)
 {
     constexpr int totalLaps = 5;
@@ -252,8 +279,10 @@ void Race::Run(Driver& player)
                     << " seconds\n";
                 std::cout << "Fuel: 100% - Tires: 100%\n";
             }
+
+            DisplayStandings();
         }
-    }
+    } 
 
     DisplayResults();
 
@@ -265,4 +294,4 @@ void Race::Run(Driver& player)
     {
         return;
     }
-}
+} 
