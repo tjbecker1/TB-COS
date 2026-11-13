@@ -128,6 +128,18 @@ double Race::CalculateLapTime(const Driver& driver, double baseLapTime)const
     return baseLapTime + tirePenalty;
 }
 
+void Race::DisplayLapResult(const Driver& driver,double lapTime) const
+{
+    std::cout << std::fixed << std::setprecision(2)
+        << driver.GetName()
+        << " - Time: " << lapTime << " seconds"
+        << " - Fuel: " << std::setprecision(0)
+        << driver.GetCar().GetFuel() << "%"
+        << " - Tires: "
+        << driver.GetCar().GetTireCondition() << "%\n"
+        << std::setprecision(2);
+}
+
 void Race::Run(Driver& player, int totalLaps)
 {
     constexpr int opponentCount = 3;
@@ -240,14 +252,7 @@ void Race::Run(Driver& player, int totalLaps)
                 playerLapTime = lapTime;
             }
 
-            std::cout << driver.GetName()
-                << " - Time: " << std::setprecision(2)
-                << lapTime << " seconds"
-                << " - Fuel: " << std::setprecision(0)
-                << driver.GetCar().GetFuel() << "%"
-                << " - Tires: "
-                << driver.GetCar().GetTireCondition() << "%\n"
-                << std::setprecision(2);
+            DisplayLapResult(driver, lapTime);
 
             const int driverCarNumber = driver.GetCar().GetNumber();
 
