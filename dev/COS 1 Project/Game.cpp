@@ -2,103 +2,126 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "Car.h"
+#include "Driver.h"
+#include "Race.h"
+#include "Input.h"
+
 
 void Game::DisplayMenu() const
 {
-	std::cout << "================================\n";
-	std::cout << "WELCOME TO CONSOLE STOCK CAR RACING\n";
-	std::cout << "=================================\n";
-	std::cout << "Select one of the following options!\n";
-	std::cout << "1. Start Race\n";
-	std::cout << "2. About\n";
-	std::cout << "3. Exit\n";
+    std::cout << "\n=================================\n";
+    std::cout << "WELCOME TO CONSOLE STOCK CAR RACING\n";
+    std::cout << "=================================\n";
+    std::cout << "Select one of the following options!\n";
+    std::cout << "1. Start Race\n";
+    std::cout << "2. About\n";
+    std::cout << "3. Exit\n";
 }
 
 void Game::Run()
 {
-	bool running = true;
-	std::string choice;
+    constexpr int minimumMenuChoice = 1;
+    constexpr int maximumMenuChoice = 3;
+    constexpr int minimumCarNumber = 1;
+    constexpr int maximumCarNumber = 99;
 
-	while (running)
-	{
-		DisplayMenu();
+    bool running = true;
 
-		if (!std::getline(std::cin, choice))
-		{
-			return;
-		}
+    while (running)
+    {
+        DisplayMenu();
 
-		switch (choice.size() == 1 ? choice[0] : '\0')
-		{
-		case '1':
-		{
-			std::string driverName;
-			std::string numberInput;
-			int carNumber = 0;
+        int menuChoice = Input::GetNumber(
+            "Select an option (1-3): ",
+            minimumMenuChoice,
+            maximumMenuChoice);
 
-			do
-			{
-				std::cout << "Enter your Driver's Name:";
+        if (menuChoice == -1)
+        {
+            return;
+        }
 
-				if (!std::getline(std::cin, driverName))
-				{
-					return;
-				}
+        switch (menuChoice)
+        {
+        case 1:
+        {
+            std::string driverName;
 
-				if (driverName.find_first_not_of("\t") == std::string::npos)
-				{
-					std::cout << "Driver Name cannot be blank.\n";
-				}
-			} while (driverName.find_first_not_of("\t") == std::string::npos);
+            do
+            {
+                std::cout << "\nEnter your Driver's Name: ";
 
-			while (true)
-			{
-				std::cout << "Please select your car number (1-99): ";
+                if (!std::getline(std::cin, driverName))
+                {
+                    return;
+                }
 
-				if (!std::getline(std::cin, numberInput))
-				{
-					return;
-				}
+                if (driverName.find_first_not_of(" \t\r")
+                    == std::string::npos)
+                {
+                    std::cout << "Driver Name cannot be blank.\n";
+                }
 
-				std::istringstream input(numberInput);
-				char extraCharacter;
+            } while (driverName.find_first_not_of(" \t\r")
+                == std::string::npos);
 
-				if ((input >> carNumber) &&
-					!(input >> extraCharacter) &&
-					carNumber >= 1 &&
-					carNumber <= 99)
-				{
-					break;
-				}
+            int carNumber = Input::GetNumber(
+                "Please select your car number (1-99): ",
+                minimumCarNumber,
+                maximumCarNumber);
 
-				std::cout << "Invalid Number. Enter a Number from 1 to 99.\n";
-			}
+            if (carNumber == -1)
+            {
+                return;
+            }
 
-			std::cout << "\nWelcome, " << driverName
-				<< "! You will race as #" << carNumber << ".\n";
+            Car playerCar("Stock Car", carNumber);
+            Driver playerDriver(driverName, playerCar);
 
-			break;
-		}
+            std::cout << "\nWelcome, " << driverName
+                << "! You will race as #" << carNumber << ".\n";
 
-		case '2':
-			std::cout << "Console Stock Car Racing is a text based racing game.\n";
-			std::cout << "Compete against AI drivers for the best Finish possible.\n";
-			std::cout << "Press Enter to return to the Main Menu.\n";
-			
-			if (!std::getline(std::cin, choice))
-			{
-				return;
-			}
-			break;
+            constexpr int minimumLaps = 5;
+            constexpr int maximumLaps = 10;
 
-		case '3':
-			std::cout << "Thanks for playing!\n";
-			running = false;
-			break;
+            const int totalLaps = Input::GetNumber(
+                "Choose the race length (5-10 laps): ",
+                minimumLaps,
+                maximumLaps);
 
-		default:
-			std::cout << "Invalid Choice. Please select 1,2 or 3.\n";
-			break;
-		}
-	}
+            if (totalLaps == -1)
+            {
+                return;
+            }
+
+
+            Race race;
+            race.Run(playerDriver, totalLaps);
+
+            break;
+        }
+
+        case 2:
+        {
+            std::cout << "\nConsole Stock Car Racing is a text based racing game.\n";
+            std::cout << "Compete against AI drivers for the best Finish possible.\n";
+            std::cout << "Press Enter to return to the Main Menu.\n";
+
+            std::string pauseInput;
+
+            if (!std::getline(std::cin, pauseInput))
+            {
+                return;
+            }
+
+            break;
+        }
+
+        case 3:
+            std::cout << "\nThanks for playing!\n";
+            running = false;
+            break;
+        }
+    }
 }
