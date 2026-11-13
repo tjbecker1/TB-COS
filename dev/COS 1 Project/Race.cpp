@@ -60,15 +60,33 @@ void Race::PerformPitStop(Driver& driver, double pitStopTime)
     driver.AddLapTime(pitStopTime);
 }
 
+void Race::DisplayStartingLineup() const
+{
+    std::cout << "\n========== STARTING LINEUP ==========\n";
+
+    for (const Driver& driver : mDrivers)
+    {
+        std::cout << driver.GetName()
+            << " - #" << driver.GetCar().GetNumber()
+            << '\n';
+    }
+}
+
 void Race::DisplayStandings() const
 {
-    // Sort a copy to keep the original driver order unchanged.
+    if (mDrivers.empty())
+    {
+        return;
+    }
+
     std::vector<Driver> standings = mDrivers;
 
     std::stable_sort(
         standings.begin(),
         standings.end(),
         CompareRaceTimes);
+
+    const double leaderTime = standings.front().GetTotalRaceTime();
 
     std::cout << "\n========== CURRENT STANDINGS ==========\n";
     std::cout << std::fixed << std::setprecision(2);
@@ -77,14 +95,37 @@ void Race::DisplayStandings() const
 
     for (const Driver& driver : standings)
     {
+        const double totalTime = driver.GetTotalRaceTime();
+        const double gapToLeader = totalTime - leaderTime;
+
         std::cout << position << ". "
             << driver.GetName()
             << " - #" << driver.GetCar().GetNumber()
-            << " - Total: " << driver.GetTotalRaceTime()
-            << " seconds\n";
+            << " - Total: " << totalTime << " seconds";
 
+        if (position == 1)
+        {
+            std::cout << " - Leader";
+        }
+        else
+        {
+            std::cout << " - Gap: +" << gapToLeader << " seconds";
+        }
+
+        std::cout << '\n';
         ++position;
     }
+}
+
+double Race::CalculateLapTime(const Driver& driver, double baseLapTime)const
+{
+    constexpr double maximumTireCondition = 100.0;
+    constexpr double tirePenaltyPerPercent = 0.10;
+
+    const double tirewear = maximumTireCondition - driver.GetCar().GetTireCondition();
+    const double tirePenalty = tirewear * tirePenaltyPerPercent;
+
+    return baseLapTime + tirePenalty;
 }
 
 void Race::Run(Driver& player, int totalLaps)
@@ -98,8 +139,6 @@ void Race::Run(Driver& player, int totalLaps)
     constexpr double pitStopTime = 15.0;
     constexpr int continueRacingChoice = 1;
     constexpr int pitStopChoice = 2;
-    constexpr double maximumTireCondition = 100.0;
-    constexpr double tirePenaltyPerPercent = 0.10;
 
     player.ResetRaceTime();
 
@@ -107,6 +146,7 @@ void Race::Run(Driver& player, int totalLaps)
     mDrivers.push_back(player);
 
     const int playerCarNumber = player.GetCar().GetNumber();
+
     std::random_device seed;
     std::mt19937 generator(seed());
     std::vector<std::string> aiNames =
@@ -172,18 +212,11 @@ void Race::Run(Driver& player, int totalLaps)
 
     }
 
-    std::cout << "\n========== STARTING LINEUP ==========\n";
-
-    for (const Driver& driver : mDrivers)
-    {
-        std::cout << driver.GetName()
-            << " - #" << driver.GetCar().GetNumber()
-            << '\n';
-    }
+    DisplayStartingLineup();
 
     std::uniform_int_distribution<int> lapHundredths(minimumLapHundredths,maximumLapHundredths);
 
-    std::cout << "\nRace Starting!\n";
+    std::cout << "\nThe Green Flag Waves... And The Race has begun!\n";
     std::cout << std::fixed << std::setprecision(2);
 
     for (int lap = 1; lap <= totalLaps; ++lap)
@@ -196,10 +229,7 @@ void Race::Run(Driver& player, int totalLaps)
         {
             const double baseLapTime = lapHundredths(generator) / hundredthsPerSecond;
 
-            const double tireWear = maximumTireCondition - driver.GetCar().GetTireCondition();
-
-            const double tirePenalty = tireWear * tirePenaltyPerPercent;
-            const double lapTime = baseLapTime + tirePenalty;
+            const double lapTime = CalculateLapTime(driver, baseLapTime);
 
             driver.AddLapTime(lapTime);
             driver.GetCar().ConsumeFuel(fuelUsagePerLap);
