@@ -1,6 +1,7 @@
 #pragma once
 #include "Driver.h"
 #include <vector>
+#include "Track.h"
 
 
 class Race
@@ -16,7 +17,7 @@ private:
 	void DisplayLapResult(const Driver& driver, double lapTime) const;
 
 public:
-	void Run(Driver& player, int totalLaps);
+	void Run(Driver& player, int totalLaps, int opponentCount, const Track& track);
 	
 };
 

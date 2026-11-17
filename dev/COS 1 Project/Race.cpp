@@ -140,14 +140,13 @@ void Race::DisplayLapResult(const Driver& driver,double lapTime) const
         << std::setprecision(2);
 }
 
-void Race::Run(Driver& player, int totalLaps)
+void Race::Run(Driver& player, int totalLaps, int opponentCount, const Track& track)
 {
-    constexpr int opponentCount = 3;
-    constexpr int minimumLapHundredths = 3000;
-    constexpr int maximumLapHundredths = 3500;
+    const int minimumLapHundredths = track.GetMinimumLapHundredths();
+    const int maximumLapHundredths = track.GetMaximumLapHundredths();
     constexpr double hundredthsPerSecond = 100.0;
-    constexpr double fuelUsagePerLap = 8.0;
-    constexpr double tireWearPerLap = 6.0;
+    const double fuelUsagePerLap = track.GetFuelUsagePerLap();
+    const double tireWearPerLap = track.GetTireWearPerLap();
     constexpr double pitStopTime = 15.0;
     constexpr int continueRacingChoice = 1;
     constexpr int pitStopChoice = 2;
@@ -223,6 +222,8 @@ void Race::Run(Driver& player, int totalLaps)
         aiPitLaps[aiNumber] = pitLapDistribution(generator);
 
     }
+
+    std::cout << "\nTrack: " << track.GetName() << '\n';
 
     DisplayStartingLineup();
 
