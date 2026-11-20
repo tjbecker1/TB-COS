@@ -8,6 +8,6 @@ int main()
 {
     // following code is the actual game code
     Game game;
-    game.Run();
+    game.Run(); 
 }
 
